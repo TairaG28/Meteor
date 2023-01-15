@@ -13,14 +13,21 @@ namespace Meteor
         //メンバ変数
         #region MemberVariable
 
+
+
         //キャンバスの用意
         static Bitmap canvas = new Bitmap(480, 700);
         Graphics gg = Graphics.FromImage(canvas);
 
         //GIFアニメ設定　バーニア
-        Image animatedImage = Image.FromFile(@"..\..\Resources\p_vernier.gif");
+        Image animatedImage = Image.FromFile(@"..\..\Resources\p_vernier_a.gif");
         FrameDimension fd;
         int animeFrame;
+
+        //ミッション失敗と成功の画像
+        Image failedImageText = Image.FromFile(@"..\..\Resources\p_failed.png");
+        Image successImageText = Image.FromFile(@"..\..\Resources\p_clear.png");
+
 
         //誘導弾・発射位置
         double missileX;
@@ -78,18 +85,30 @@ namespace Meteor
         const int feedIntvTime = 1000;
 
         long score; //スコア
-        Font myFont = new Font("Arial", 16);
+
+        //PrivateFontCollectionオブジェクトを作成する
+        System.Drawing.Text.PrivateFontCollection pfc =
+           new System.Drawing.Text.PrivateFontCollection();
+
+        /*Font myFont = new Font("Arial", 16);*/
+        Font myFont;
 
         bool mutekiFlg;
 
         List<Bullet> bullets_player = new List<Bullet>();
         List<Bullet> bullets_enemy = new List<Bullet>();
         List<Enemy> enemys = new List<Enemy>();
+        List<Explosion> explosions = new List<Explosion>();
 
         ImageMov bgMov = new ImageMov(Image.FromFile(@"..\..\Resources\p_BG_anime.gif"));
 
         Image currentImage = Image.FromFile(@"..\..\Resources\p_BG_change_blk.png");
         int currentAlphaPercent;
+
+        DrawSprite msgStart;
+        DrawSprite msgWarning;
+        DrawSprite drawExplosion;
+
 
         #endregion
 
@@ -157,6 +176,8 @@ namespace Meteor
 
             }
 
+
+
             //敵位置の重複チェック
             for (int i = 0; i < enemys.Count; i++)
             {
@@ -182,11 +203,27 @@ namespace Meteor
             clearFlg = false;
             currentAlphaPercent = 100;
 
+            msgStart = new DrawSprite(350, 60, Image.FromFile(@"..\..\Resources\p_start.png"));
+            msgWarning = new DrawSprite(480, 80, Image.FromFile(@"..\..\Resources\p_WARNING.png"));
+            drawExplosion = new DrawSprite(50, 50, Image.FromFile(@"..\..\Resources\p_explosion.png"));
+
             score = 0;
             /* bullets_enemy.Add(new Bullet(240, 300));*/
 
+            //PrivateFontCollectionにフォントを追加する
+            pfc.AddFontFile(@"..\..\Resources\font\DotGothic16-Regular.ttf");
+            //同様にして、複数のフォントを追加できる
+            //pfc.AddFontFile(@"C:\test\wlmaru20044u.ttf");
+
+            //PrivateFontCollectionの先頭のフォントのFontオブジェクトを作成する
+            System.Drawing.Font usefont =
+                new System.Drawing.Font(pfc.Families[0], 10);
+
+            myFont = usefont;
+
             bullets_enemy.Clear();
             bullets_player.Clear();
+            explosions.Clear();
 
             for (int i = 0; i < sndList.Count; i++)
             {
@@ -321,21 +358,14 @@ namespace Meteor
                 sndList[4].Play();
             }
 
-            //ゲームオーバー文字
-            if (msgcnt > 70)
+            //ゲーム結果文字
+            if (msgcnt > 70 && msgcnt < 280)
             {
-                gg.DrawImage(pGameover.Image, new Rectangle(70, 277, 350, 60));
+                gg.DrawImage(failedImageText, new Rectangle(70, 277, 350, 60));
             }
 
             resultCommon(msgcnt);
-
-            gg.DrawString("SCORE:" + score.ToString(),
-            myFont, Brushes.White, 10, 10);
-
             mutekiModoInfo();
-
-
-
         }
 
         //ゲームクリア
@@ -343,7 +373,16 @@ namespace Meteor
         {
             //爆発演出中の描画は、すべてここで行う
             /*gg.DrawImage(pBG.Image, new Rectangle(0, 0, 480, 700));*/
-            gg.DrawImage(bgMov.stopFrame(), new Rectangle(0, 0, 464, 664));
+
+            if (msgcnt > 200 )
+            {
+                gg.DrawImage(bgMov.moveFrame(), new Rectangle(0, 0, 464, 664));
+            }
+            else
+            {
+                gg.DrawImage(bgMov.stopFrame(), new Rectangle(0, 0, 464, 664));
+            }
+
 
             ecnt += 4;
             msgcnt++;
@@ -377,7 +416,7 @@ namespace Meteor
                         expSize = 10;
                     }
 
-                    Console.WriteLine(msgcnt);
+                    /* Console.WriteLine(msgcnt);*/
 
                     //爆発音
                     sndList[8].Stop();
@@ -391,9 +430,7 @@ namespace Meteor
             }
 
             //プレイヤー描画
-            if (animeFrame > animatedImage.GetFrameCount(fd) - 1) { animeFrame = 0; }
-            animatedImage.SelectActiveFrame(fd, animeFrame);
-            animeFrame++;
+
 
             gg.DrawImage(animatedImage, new Rectangle(player.x + (player.W / 2) - 10, player.y + player.H + 15, 20, -20));
             gg.DrawImage(player.Image, new Rectangle(player.x, player.y, player.W, player.H));
@@ -406,15 +443,18 @@ namespace Meteor
             }
 
             //ゲームクリア文字
-            if (msgcnt > 70)
+            if (msgcnt > 70 && msgcnt < 280)
             {
-                gg.DrawImage(pGameover.Image, new Rectangle(70, 277, 350, 60));
+                gg.DrawImage(successImageText, new Rectangle(70, 277, 350, 60));
 
             }
 
             if (msgcnt > 200 && msgcnt < 280)
             {
                 player.y -= 10;
+                if (animeFrame > animatedImage.GetFrameCount(fd) - 1) { animeFrame = 0; }
+                animatedImage.SelectActiveFrame(fd, animeFrame);
+                animeFrame++;
             }
 
             resultCommon(msgcnt);
@@ -440,7 +480,7 @@ namespace Meteor
             msgcnt++;
             //タイトル表示中の描画はすべてここで行う
 
-            
+
             gg.DrawImage(bgMov.moveFrame(), new Rectangle(0, 0, 464, 664));
 
             /*gg.DrawImage(pBG.Image, new Rectangle(0, 0, 480, 700));*/
@@ -475,6 +515,34 @@ namespace Meteor
             gg.DrawImage(bgMov.moveFrame(), new Rectangle(0, 0, 464, 664));
 
             /*gg.DrawImage(pBG.Image, new Rectangle(0, 0, 480, 700));*/
+
+
+            //敵の爆発の描画
+            for (int i = 0; i < explosions.Count; i++)
+            {
+
+                if (explosions.Count <= 0) { return; }
+
+                if(explosions[i].currentTime > 70)
+                {
+                    if (explosions.Count > 0)
+                    {
+                        explosions.RemoveAt(i);
+                        i--;
+                        if (i < 0)
+                        {
+                            i = 0;
+                        }
+                    }
+
+                }
+                else
+                {
+                    drawExplosion.timeDrawC(explosions[i].x, explosions[i].y, explosions[i].currentTime, gg);
+                    explosions[i].currentTime += 10;
+                }
+
+            }
 
             //敵機の描画と移動
             for (int i = 0; i < enemys.Count; i++)
@@ -803,7 +871,6 @@ namespace Meteor
 
             #endregion
 
-
             //ＢＧＭのループ処理
             if (!bossFlg)
             {
@@ -822,6 +889,9 @@ namespace Meteor
 
             }
 
+            msgStart.timeDrawA(240, 350, 35, gg);
+            if (bossFlg) msgWarning.timeDrawB(240, 350, 60, gg);
+
             gg.DrawString("SCORE:" + score.ToString(),
             myFont, Brushes.White, 30, 30);
 
@@ -834,7 +904,7 @@ namespace Meteor
         //タイマー処理
         private void timer1_Tick(object sender, EventArgs e)
         {
-            Console.WriteLine(msgcnt +":"+ feedIntv);
+            /* Console.WriteLine(msgcnt + ":" + feedIntv);*/
 
             if (titleFlg)
             {
@@ -856,24 +926,25 @@ namespace Meteor
                 dispGame();
             }
 
+            //暗転処理（タイトルからゲーム）
             if (feedFlgTforG)
             {
 
 
-                if (feedIntv <= feedIntvTime -100 && feedIntv >= 100)
+                if (feedIntv <= feedIntvTime - 100 && feedIntv >= 100)
                 {
                     Image imageIntv = Image.FromFile(@"..\..\Resources\p_BG_change.png");
                     gg.DrawImage(imageIntv, new Rectangle(0, 0, 480, 700));
                 }
 
-                if (feedIntv <= feedIntvTime && feedIntv >= feedIntvTime -100 || feedIntv <= 200 && feedIntv >= 100)
+                if (feedIntv <= feedIntvTime && feedIntv >= feedIntvTime - 100 || feedIntv <= 200 && feedIntv >= 100)
                 {
                     currentAlphaPercent += 10;
                     Image imgBlk2 = cO.CreateTranslucentImage(currentImage, currentAlphaPercent * 0.01f);
                     gg.DrawImage(imgBlk2, new Rectangle(0, 0, 480, 700));
                 }
 
-                if (feedIntv <= feedIntvTime-100 && feedIntv >= feedIntvTime-200 || feedIntv <= 100 && feedIntv >= 0)
+                if (feedIntv <= feedIntvTime - 100 && feedIntv >= feedIntvTime - 200 || feedIntv <= 100 && feedIntv >= 0)
                 {
                     currentAlphaPercent -= 10;
                     Image imgBlk2 = cO.CreateTranslucentImage(currentImage, currentAlphaPercent * 0.01f);
@@ -892,6 +963,7 @@ namespace Meteor
                 if (feedIntv == 0) { feedFlgTforG = false; }
             }
 
+            //暗転処理（リザルトからタイトル）
             if (feedFlgRforT)
             {
 
@@ -935,7 +1007,12 @@ namespace Meteor
         {
             if (mutekiFlg)
             {
-                gg.DrawString("MutekiMode", myFont, Brushes.White, 240, 500);
+                //StringFormatを作成
+                StringFormat sf = new StringFormat();
+                //文字を真ん中に表示
+                sf.Alignment = StringAlignment.Center;
+                sf.LineAlignment = StringAlignment.Center;
+                gg.DrawString("無敵モード中", myFont, Brushes.White, 240, 620, sf);
             }
         }
 
@@ -1054,8 +1131,12 @@ namespace Meteor
                         //敵の撃墜処理
                         if (enemys[i].hp <= 0)
                         {
+
+
                             if (typeof(Boss) != enemys[i].GetType())
                             {
+                                explosions.Add(new Explosion(ecx, ecy));
+
                                 if (!bossFlg)
                                 {
                                     enemys[i].x = rand.Next(1, 450);
@@ -1069,6 +1150,7 @@ namespace Meteor
                                 }
                                 else
                                 {
+
                                     enemys.RemoveAt(i);
                                     score += 100;
                                     i--;
@@ -1078,6 +1160,7 @@ namespace Meteor
                             }
                             else//ボスだった場合
                             {
+                                score += 10000;
                                 clearFlg = true;
                                 sndList[2].Stop();
 
@@ -1271,10 +1354,30 @@ namespace Meteor
             //クリックメッセージの表示
             if (msgCunt > 280)
             {
+
+                int numTxt = -100;
+                Image imgBlk2 = cO.CreateTranslucentImage(currentImage, 75 * 0.01f);
+                gg.DrawImage(imgBlk2, new Rectangle(0, 0, 480, 700));
+
+                gg.DrawImage(pGameover.Image, new Rectangle(70, 277 + numTxt, 350, 60));
+
                 if (msgCunt % 60 > 20)
                 {
-                    gg.DrawImage(pMsg.Image, new Rectangle(110, 387, 271, 26));
+                    gg.DrawImage(pMsg.Image, new Rectangle(110, 387 + numTxt, 271, 26));
                 }
+
+                //StringFormatを作成
+                StringFormat sf = new StringFormat();
+                //文字を真ん中に表示
+                sf.Alignment = StringAlignment.Center;
+                sf.LineAlignment = StringAlignment.Center;
+
+                gg.DrawString("ＲＥＳＵＬＴ　ＳＣＯＲＥ", myFont, Brushes.White, 240, 450 + numTxt, sf);
+                gg.DrawString("【" + score.ToString() + "】", myFont, Brushes.White, 240, 475 + numTxt, sf);
+
+                gg.DrawString("ＴＨＡＮＫ　ＹＯＵ", myFont, Brushes.White, 240, 550 + numTxt, sf);
+                gg.DrawString("ＦＯＲ", myFont, Brushes.White, 240, 575 + numTxt, sf);
+                gg.DrawString("ＰＬＡＹＩＮＧ！", myFont, Brushes.White, 240, 600 + numTxt, sf);
 
                 //BGMのループ再生処理
                 if (sndList[5].CurrentPosition == sndList[5].Duration)

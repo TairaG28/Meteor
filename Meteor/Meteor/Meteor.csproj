@@ -53,7 +53,9 @@
     <Compile Include="Boss.cs" />
     <Compile Include="Bullet.cs" />
     <Compile Include="ChngOpcty.cs" />
+    <Compile Include="DrawSprite.cs" />
     <Compile Include="Enemy.cs" />
+    <Compile Include="Explosion.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -147,6 +149,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\test.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\p_clear.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\p_failed.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

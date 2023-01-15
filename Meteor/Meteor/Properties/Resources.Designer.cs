@@ -133,6 +133,16 @@ namespace Meteor.Properties {
         /// <summary>
         ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
         /// </summary>
+        internal static System.Drawing.Bitmap p_clear {
+            get {
+                object obj = ResourceManager.GetObject("p_clear", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
         internal static System.Drawing.Bitmap p_enemy {
             get {
                 object obj = ResourceManager.GetObject("p_enemy", resourceCulture);
@@ -146,6 +156,16 @@ namespace Meteor.Properties {
         internal static System.Drawing.Bitmap p_explosion {
             get {
                 object obj = ResourceManager.GetObject("p_explosion", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
+        internal static System.Drawing.Bitmap p_failed {
+            get {
+                object obj = ResourceManager.GetObject("p_failed", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
