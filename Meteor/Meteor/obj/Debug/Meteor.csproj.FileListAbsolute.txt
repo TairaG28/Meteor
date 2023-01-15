@@ -1,0 +1,16 @@
+D:\職業訓練\C#\Meteor\Meteor\Meteor\bin\Debug\Meteor.exe.config
+D:\職業訓練\C#\Meteor\Meteor\Meteor\bin\Debug\Meteor.exe
+D:\職業訓練\C#\Meteor\Meteor\Meteor\bin\Debug\Meteor.pdb
+D:\職業訓練\C#\Meteor\Meteor\Meteor\bin\Debug\Microsoft.DirectX.Direct3D.dll
+D:\職業訓練\C#\Meteor\Meteor\Meteor\bin\Debug\Microsoft.DirectX.dll
+D:\職業訓練\C#\Meteor\Meteor\Meteor\bin\Debug\Microsoft.DirectX.AudioVideoPlayback.xml
+D:\職業訓練\C#\Meteor\Meteor\Meteor\bin\Debug\Microsoft.DirectX.Direct3D.xml
+D:\職業訓練\C#\Meteor\Meteor\Meteor\bin\Debug\Microsoft.DirectX.xml
+D:\職業訓練\C#\Meteor\Meteor\Meteor\obj\Debug\Meteor.csproj.AssemblyReference.cache
+D:\職業訓練\C#\Meteor\Meteor\Meteor\obj\Debug\Meteor.Form1.resources
+D:\職業訓練\C#\Meteor\Meteor\Meteor\obj\Debug\Meteor.Properties.Resources.resources
+D:\職業訓練\C#\Meteor\Meteor\Meteor\obj\Debug\Meteor.csproj.GenerateResource.cache
+D:\職業訓練\C#\Meteor\Meteor\Meteor\obj\Debug\Meteor.csproj.CoreCompileInputs.cache
+D:\職業訓練\C#\Meteor\Meteor\Meteor\obj\Debug\Meteor.csproj.CopyComplete
+D:\職業訓練\C#\Meteor\Meteor\Meteor\obj\Debug\Meteor.exe
+D:\職業訓練\C#\Meteor\Meteor\Meteor\obj\Debug\Meteor.pdb
