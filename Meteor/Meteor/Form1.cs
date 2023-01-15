@@ -204,7 +204,7 @@ namespace Meteor
             currentAlphaPercent = 100;
 
             msgStart = new DrawSprite(350, 60, Image.FromFile(@"..\..\Resources\p_start.png"));
-            msgWarning = new DrawSprite(480, 80, Image.FromFile(@"..\..\Resources\p_WARNING.png"));
+            msgWarning = new DrawSprite(480, 70, Image.FromFile(@"..\..\Resources\p_WARNING.png"));
             drawExplosion = new DrawSprite(50, 50, Image.FromFile(@"..\..\Resources\p_explosion.png"));
 
             score = 0;
@@ -990,7 +990,7 @@ namespace Meteor
                 if (feedIntv == 100)
                 {
                     msgcnt = 0;
-                    initGame(); ;
+                    initGame();
                 }
 
                 feedIntv -= 10;
