@@ -18,7 +18,7 @@ namespace Meteor
         public Boss(int x, int y) : base(x, y)
         {
             this.RR = 125;
-            this.hp = 10;
+            this.hp = 50;
             this.Image = Image.FromFile(@"..\..\Resources\p_boss.png");
 
         }

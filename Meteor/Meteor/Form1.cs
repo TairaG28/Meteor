@@ -1016,7 +1016,6 @@ namespace Meteor
             }
         }
 
-
         //自機と被弾チェック処理
         private void hitCheck()
         {
@@ -1238,7 +1237,7 @@ namespace Meteor
         //ボス出現フラグ
         private void bossIn()
         {
-            if (score >= 100)
+            if (score >= 1000)
             {
                 bossFlg = true;
 
@@ -1255,8 +1254,6 @@ namespace Meteor
             }
 
         }
-
-
 
         //誘導弾
         private bool missileMove(Enemy enemy, int num)
