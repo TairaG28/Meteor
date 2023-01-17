@@ -1134,6 +1134,9 @@ namespace Meteor
 
                             if (typeof(Boss) != enemys[i].GetType())
                             {
+                                //爆発音
+                                sndList[8].Stop();
+                                sndList[8].Play();
                                 explosions.Add(new Explosion(ecx, ecy));
 
                                 if (!bossFlg)
